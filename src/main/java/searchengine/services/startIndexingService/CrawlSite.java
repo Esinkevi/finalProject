@@ -29,7 +29,7 @@ public class CrawlSite extends RecursiveAction {
     private static final Object lock = new Object();
 
     private static boolean interrupted = false;
-    private static final Logger logger = LoggerFactory.getLogger(CrawlingSitePages.class);
+    private static final Logger logger = LoggerFactory.getLogger(CrawlSite.class);
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
     private static final ForkJoinPool forkJoinpool = new ForkJoinPool(availableProcessors);
     private final SiteEntity siteEntity;
