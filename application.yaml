@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    username: root
+    password: Drandran@1940
+    url: jdbc:mysql://localhost:3306/search_engine?useSSL=false&requireSSL=false&allowPublicKeyRetrieval=true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+web-crawling:
+    userAgent: PageHunterBot
+    referrer: http://www.google.com
+
+indexing-settings:
+  sites:
+#    - url: https://www.lenta.ru
+#      name: Лента.ру
+    - url: https://www.skillbox.ru
+      name: Skillbox
+    - url: https://www.playback.ru
+      name: PlayBack.Ru
+
