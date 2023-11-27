@@ -46,18 +46,13 @@ public class CrawlSite extends RecursiveAction {
         forkJoinpool.submit(() -> linksList.parallelStream().forEach(link -> {
 
             if (interrupted) {
-                siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.FAILED,
-                        LocalDateTime.now(), "Индексация остановлена пользователем");
+                siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.FAILED, LocalDateTime.now(), "Индексация остановлена пользователем");
                 return;
             }
 
             String absUrl = siteEntity.getUrl() + link;
             try {
-                Connection.Response response = Jsoup.connect(absUrl)
-                        .userAgent(webCrawlingConfig.getUserAgent())
-                        .referrer(webCrawlingConfig.getReferrer())
-                        .ignoreContentType(true)
-                        .execute();
+                Connection.Response response = Jsoup.connect(absUrl).userAgent(webCrawlingConfig.getUserAgent()).referrer(webCrawlingConfig.getReferrer()).ignoreContentType(true).execute();
                 if (response.contentType().startsWith("text/")) {
                     PageEntity pageEntity = new PageEntity();
                     pageEntity.setSite(siteEntity);
@@ -65,14 +60,14 @@ public class CrawlSite extends RecursiveAction {
                     pageEntity.setContent(response.body());
                     pageEntity.setCode(response.statusCode());
 
-                    synchronized (lock){
-                        if (!pageEntityRepository.existsByPath(link)){
+                    synchronized (lock) {
+                        if (!pageEntityRepository.existsByPath(link)) {
                             pageEntityRepository.save(pageEntity);
+                            siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.INDEXING, LocalDateTime.now(), "");
+
                         }
                     }
 
-                    siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.INDEXING
-                            , LocalDateTime.now(), "");
 
                     ForkJoinTask task = new CrawlSite(siteEntity, absUrl, pageEntityRepository, webCrawlingConfig, siteEntityRepository);
                     task.fork();
@@ -85,9 +80,7 @@ public class CrawlSite extends RecursiveAction {
         })).invoke();
 
 
-        siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.INDEXED,
-                LocalDateTime.now(), "Индексация завершена");
-
+        siteEntityRepository.updateSiteStatus(siteEntity.getId(), SiteEntityStatus.INDEXED, LocalDateTime.now(), "Индексация завершена");
 
     }
 
@@ -99,10 +92,7 @@ public class CrawlSite extends RecursiveAction {
 
         Set<String> links = new TreeSet<>();
         try {
-            Document doc = Jsoup.connect(url)
-                    .userAgent(webCrawlingConfig.getUserAgent())
-                    .referrer(webCrawlingConfig.getReferrer())
-                    .get();
+            Document doc = Jsoup.connect(url).userAgent(webCrawlingConfig.getUserAgent()).referrer(webCrawlingConfig.getReferrer()).get();
             Elements elements = doc.select("a");
             for (Element element : elements) {
                 String link = element.attr("href");

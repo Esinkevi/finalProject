@@ -8,4 +8,5 @@ public interface StartIndexingService {
 
     IndexingResponse stopIndexing();
 
+    IndexingResponse indexPage(String url);
 }

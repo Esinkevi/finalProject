@@ -12,14 +12,8 @@ import searchengine.model.SiteEntityStatus;
 import java.time.LocalDateTime;
 
 @Repository
-public interface SiteEntityRepository extends JpaRepository<SiteEntity,Long> {
+public interface SiteEntityRepository extends JpaRepository<SiteEntity, Long> {
 
-    @Modifying
-    @Query("DELETE FROM SiteEntity s WHERE s.url IN :urls")
-    void deleteByUrls(Iterable<String> urls);
-
-    @Modifying
-    @Query("DELETE FROM SiteEntity se WHERE se.url = ?1")
     void deleteSiteByUrl(String url);
 
     SiteEntity findByUrl(String url);
@@ -33,4 +27,5 @@ public interface SiteEntityRepository extends JpaRepository<SiteEntity,Long> {
             @Param("statusTime") LocalDateTime statusTime,
             @Param("lastErrorText") String lastErrorText
     );
+
 }

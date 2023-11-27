@@ -12,9 +12,8 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class StartIndexingServiceImpl implements StartIndexingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(StartIndexingServiceImpl.class);
 
-    private boolean indexingInProgress = false;
+    private boolean indexingInProgress;
 
     private final IndexingResponse indexingResponse;
     private final ProcessSiteEntity processSiteEntity;
@@ -26,6 +25,7 @@ public class StartIndexingServiceImpl implements StartIndexingService {
         if (indexingInProgress) {
             indexingResponse.setResult(false);
             indexingResponse.setError("Индексация уже запущена");
+            return indexingResponse;
         }
 
         indexingInProgress = true;
@@ -52,6 +52,27 @@ public class StartIndexingServiceImpl implements StartIndexingService {
         indexingResponse.setResult(true);
         indexingResponse.setError("");
         return indexingResponse;
+    }
+
+    @Override
+    public IndexingResponse indexPage(String url) {
+        IndexingResponse indexingResponse = new IndexingResponse();
+        if (!isValidUrl(url)) {
+            indexingResponse.setResult(false);
+            indexingResponse.setError("Данная страница находится за пределами сайтов," + "указанных в конфигурационном файле");
+            return indexingResponse;
+        }
+
+        indexingResponse.setResult(true);
+
+//        processIndexing.processIndexingPage(url);
+
+
+        return indexingResponse;
+    }
+
+    private boolean isValidUrl(String url) {
+        return false;
     }
 
 }

@@ -57,7 +57,7 @@ public class ProcessSiteEntity {
     private void deleteSiteAndRelatedPages(String url) {
         SiteEntity siteEntity = siteEntityRepository.findByUrl(url);
         if (siteEntity != null) {
-            pageEntityRepository.deletePagesBySiteId(siteEntity.getId());
+            pageEntityRepository.deleteBySite_Id(siteEntity.getId());
 
             siteEntityRepository.deleteSiteByUrl(siteEntity.getUrl());
             logger.info("delete SiteEntity and Related Pages " + siteEntity.getName());

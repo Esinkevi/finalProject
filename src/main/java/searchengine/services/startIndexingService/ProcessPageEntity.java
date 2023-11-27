@@ -21,7 +21,6 @@ import java.util.concurrent.ForkJoinTask;
 public class ProcessPageEntity {
 
 
-
     private final PageEntityRepository pageEntityRepository;
     private final SiteEntityRepository siteEntityRepository;
     private final SitesList sitesList;
@@ -30,16 +29,15 @@ public class ProcessPageEntity {
     public void processPage() {
         List<ForkJoinTask<Void>> tasks = new ArrayList<>();
 
-        for (Site site : sitesList.getSites()){
+        for (Site site : sitesList.getSites()) {
             SiteEntity siteEntity = siteEntityRepository.findByUrl(site.getUrl());
-            if (siteEntity != null){
-                CrawlSite crawlSite = new CrawlSite(siteEntity,siteEntity.getUrl(),pageEntityRepository,webCrawlingConfig,siteEntityRepository);
+            if (siteEntity != null) {
+                CrawlSite crawlSite = new CrawlSite(siteEntity, siteEntity.getUrl(), pageEntityRepository, webCrawlingConfig, siteEntityRepository);
                 tasks.add(crawlSite);
             }
         }
 
         ForkJoinTask.invokeAll(tasks);
-
 
     }
 }
