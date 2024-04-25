@@ -1,10 +1,9 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import searchengine.dto.startIndexing.IndexingResponse;
+import searchengine.dto.startindexing.IndexingResponse;
+
 
 import java.util.concurrent.CompletableFuture;
 
@@ -15,24 +14,24 @@ public class StartIndexingServiceImpl implements StartIndexingService {
 
     private boolean indexingInProgress;
 
-    private final IndexingResponse indexingResponse;
-    private final ProcessSiteEntity processSiteEntity;
-    private final ProcessPageEntity processPageEntity;
+    private final ProcessSite processSite;
+    private final ProcessPage processPage;
+
 
 
     @Override
     public IndexingResponse startIndexing() {
+        IndexingResponse indexingResponse = new IndexingResponse();
         if (indexingInProgress) {
             indexingResponse.setResult(false);
             indexingResponse.setError("Индексация уже запущена");
             return indexingResponse;
         }
-
         indexingInProgress = true;
 
         CompletableFuture.runAsync(() -> {
-            processSiteEntity.processSite();
-            processPageEntity.processPage();
+            processSite.processSite();
+            processPage.processPages();
         });
 
         indexingResponse.setResult(true);
@@ -41,38 +40,36 @@ public class StartIndexingServiceImpl implements StartIndexingService {
 
     @Override
     public IndexingResponse stopIndexing() {
+        IndexingResponse indexingResponse = new IndexingResponse();
         if (!indexingInProgress) {
             indexingResponse.setResult(false);
             indexingResponse.setError("Индексация не выполняется");
             return indexingResponse;
         }
 
-        CrawlSite.interrupt();
+        IndexingSite.stopProcessing();
 
         indexingResponse.setResult(true);
         indexingResponse.setError("");
+        indexingInProgress = false;
         return indexingResponse;
     }
 
     @Override
-    public IndexingResponse indexPage(String url) {
+    public IndexingResponse indexOnePage(String url) {
         IndexingResponse indexingResponse = new IndexingResponse();
-        if (!isValidUrl(url)) {
+
+        if (!processPage.processOnePage(url)) {
             indexingResponse.setResult(false);
             indexingResponse.setError("Данная страница находится за пределами сайтов," + "указанных в конфигурационном файле");
+            System.out.println(url);
             return indexingResponse;
         }
 
         indexingResponse.setResult(true);
 
-//        processIndexing.processIndexingPage(url);
-
 
         return indexingResponse;
-    }
-
-    private boolean isValidUrl(String url) {
-        return false;
     }
 
 }

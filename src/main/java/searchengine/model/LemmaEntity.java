@@ -16,7 +16,7 @@ public class LemmaEntity {
 
     @ManyToOne
     @JoinColumn(name = "site_id")
-    private SiteEntity site;
+    private SiteEntity siteId;
 
     @Column(name = "lemma", nullable = false, columnDefinition = "VARCHAR(255)")
     private String lemma;

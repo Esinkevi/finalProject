@@ -1,6 +1,6 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
-import searchengine.dto.startIndexing.IndexingResponse;
+import searchengine.dto.startindexing.IndexingResponse;
 
 public interface StartIndexingService {
 
@@ -8,5 +8,5 @@ public interface StartIndexingService {
 
     IndexingResponse stopIndexing();
 
-    IndexingResponse indexPage(String url);
+    IndexingResponse indexOnePage(String url);
 }

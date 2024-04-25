@@ -1,14 +1,15 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
 import org.apache.lucene.morphology.LuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianLuceneMorphology;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.management.ManagementPermission;
 import java.util.*;
 
+@Service
 public class WordProcessing {
 
     private static final LuceneMorphology luceneMorphology;
@@ -21,29 +22,23 @@ public class WordProcessing {
         }
     }
 
-    private final String text;
 
+    public Map<String, Integer> processingWord(String text) {
 
-    public WordProcessing(String text) {
-        this.text = text;
-    }
-
-    public Map<String, Integer> processingWord() {
-
-        Map<String, Integer> lemmasList = getLemmas();
+        Map<String, Integer> lemmasList = getLemmas(text);
 
         return lemmasList;
     }
 
-    private Map<String, Integer> getLemmas() {
+    private Map<String, Integer> getLemmas(String text) {
         String[] arrayWords = clearingTextFromHtmlCode(text);
-
         Map<String, Integer> lemmasList = new HashMap<>();
-        for (String text : arrayWords) {
-            String word = text.toLowerCase(Locale.ROOT);
 
-            if (luceneMorphology.checkString(word) && clearingPartOfSpeech(word)) {
-                String normalForms = getNormalForms(word);
+        for (String word : arrayWords) {
+            String wordLowerCase = word.toLowerCase(Locale.ROOT);
+
+            if (luceneMorphology.checkString(wordLowerCase) && clearingPartOfSpeech(wordLowerCase)) {
+                String normalForms = getNormalForms(wordLowerCase);
 
                 if (lemmasList.containsKey(normalForms)) {
                     int currentValue = lemmasList.get(normalForms);

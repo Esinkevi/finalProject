@@ -1,27 +1,26 @@
 package searchengine.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import searchengine.dto.startIndexing.IndexingRequest;
-import searchengine.dto.startIndexing.IndexingResponse;
+import searchengine.dto.search.SearchRequest;
+import searchengine.dto.search.SearchResponseDto;
+import searchengine.dto.startindexing.IndexingResponse;
 import searchengine.dto.statistics.StatisticsResponse;
-import searchengine.services.startIndexingService.StartIndexingService;
+import searchengine.services.searchservice.SearchService;
+import searchengine.services.startindexingservice.StartIndexingService;
 import searchengine.services.StatisticsService;
 
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ApiController {
 
     private final StatisticsService statisticsService;
     private final StartIndexingService startIndexingService;
+    private final SearchService searchService;
 
-
-
-    public ApiController(StatisticsService statisticsService, StartIndexingService startIndexingService) {
-        this.statisticsService = statisticsService;
-        this.startIndexingService = startIndexingService;
-    }
 
     @GetMapping("/statistics")
     public ResponseEntity<StatisticsResponse> statistics() {
@@ -35,16 +34,25 @@ public class ApiController {
 
     @GetMapping("/stopIndexing")
     public ResponseEntity<IndexingResponse> stopIndexing() {
-        return  ResponseEntity.ok(startIndexingService.stopIndexing());
+        return ResponseEntity.ok(startIndexingService.stopIndexing());
     }
 
-//    @PostMapping("/indexPage")
-//    public ResponseEntity<IndexingResponse> indexPage(@RequestBody IndexingRequest indexingRequest){
-//        return ResponseEntity.ok(startIndexingService.indexPage(indexingRequest.getUrl()));
-//    }
+    @PostMapping("/indexPage")
+    public ResponseEntity<IndexingResponse> indexPage(@RequestParam("url") String url) {
+        return ResponseEntity.ok(startIndexingService.indexOnePage(url));
+    }
 
-
-
-
-
+    @GetMapping("/search")
+    public ResponseEntity<SearchResponseDto> search(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String site,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "20") int limit) {
+        SearchRequest request = new SearchRequest();
+        request.setQuery(query);
+        request.setSite(site);
+        request.setOffset(offset);
+        request.setLimit(limit);
+        return ResponseEntity.ok(searchService.getSearchResult(request));
+    }
 }

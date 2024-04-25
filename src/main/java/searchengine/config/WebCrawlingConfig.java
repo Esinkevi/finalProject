@@ -11,6 +11,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "web-crawling")
 public class WebCrawlingConfig {
     private String userAgent;
-
     private String referrer;
 }

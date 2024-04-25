@@ -15,11 +15,11 @@ public class IndexEntity {
 
     @ManyToOne
     @JoinColumn(name = "page_id", nullable = false)
-    private PageEntity page;
+    private PageEntity pageId;
 
     @ManyToOne
     @JoinColumn(name = "lemma_id", nullable = false)
-    private LemmaEntity lemma;
+    private LemmaEntity lemmaId;
 
     @Column(name = "`rank`", nullable = false)
     private float rank;

@@ -1,9 +1,9 @@
 package searchengine.dto.search;
 
-import lombok.Data;
+import searchengine.model.IndexEntity;
 
-@Data
-public class DataItem {
+@lombok.Data
+public class Data {
     private String site;
     private String siteName;
     private String uri;
@@ -11,3 +11,4 @@ public class DataItem {
     private String snippet;
     private double relevance;
 }
+

@@ -1,4 +1,4 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Connection;
@@ -26,14 +26,17 @@ import java.util.concurrent.RecursiveAction;
 @RequiredArgsConstructor
 public class CrawlSite extends RecursiveAction {
 
+    private static final String A = "a";
+    private static final String HREF_ATTR = "href";
     private static final Object lock = new Object();
-
-    private static boolean interrupted = false;
+    private static boolean interrupted;
     private static final Logger logger = LoggerFactory.getLogger(CrawlSite.class);
     private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
     private static final ForkJoinPool forkJoinpool = new ForkJoinPool(availableProcessors);
+
     private final SiteEntity siteEntity;
     private final String url;
+
     private final PageEntityRepository pageEntityRepository;
     private final WebCrawlingConfig webCrawlingConfig;
     private final SiteEntityRepository siteEntityRepository;
@@ -55,7 +58,7 @@ public class CrawlSite extends RecursiveAction {
                 Connection.Response response = Jsoup.connect(absUrl).userAgent(webCrawlingConfig.getUserAgent()).referrer(webCrawlingConfig.getReferrer()).ignoreContentType(true).execute();
                 if (response.contentType().startsWith("text/")) {
                     PageEntity pageEntity = new PageEntity();
-                    pageEntity.setSite(siteEntity);
+                    pageEntity.setSiteId(siteEntity);
                     pageEntity.setPath(link);
                     pageEntity.setContent(response.body());
                     pageEntity.setCode(response.statusCode());
@@ -67,7 +70,6 @@ public class CrawlSite extends RecursiveAction {
 
                         }
                     }
-
 
                     ForkJoinTask task = new CrawlSite(siteEntity, absUrl, pageEntityRepository, webCrawlingConfig, siteEntityRepository);
                     task.fork();
@@ -93,14 +95,13 @@ public class CrawlSite extends RecursiveAction {
         Set<String> links = new TreeSet<>();
         try {
             Document doc = Jsoup.connect(url).userAgent(webCrawlingConfig.getUserAgent()).referrer(webCrawlingConfig.getReferrer()).get();
-            Elements elements = doc.select("a");
+            Elements elements = doc.select(A);
             for (Element element : elements) {
-                String link = element.attr("href");
+                String link = element.attr(HREF_ATTR);
 
                 if (link.startsWith("/") && !pageEntityRepository.existsByPath(link)) {
                     links.add(link);
                 }
-
             }
         } catch (IOException e) {
             logger.error("Ошибка при индексации сайта {} по URL {}", siteEntity.getName(), url, e);

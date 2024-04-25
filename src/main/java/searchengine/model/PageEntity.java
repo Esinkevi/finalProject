@@ -18,7 +18,7 @@ public class PageEntity {
 
     @ManyToOne
     @JoinColumn(name = "site_id", nullable = false)
-    private SiteEntity site;
+    private SiteEntity siteId;
 
     @Column(name = "path", nullable = false)
     private String path;

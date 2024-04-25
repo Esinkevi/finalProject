@@ -20,12 +20,14 @@ public interface SiteEntityRepository extends JpaRepository<SiteEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE SiteEntity s SET s.status = :status, s.statusTime = :statusTime, s.lastErrorText = COALESCE(:lastErrorText, s.lastErrorText) WHERE s.id = :siteId")
+    @Query("UPDATE SiteEntity s SET s.status = :status, s.statusTime = :statusTime, s.lastError = COALESCE(:lastErrorText, s.lastError) WHERE s.id = :siteId")
     void updateSiteStatus(
             @Param("siteId") Long siteId,
             @Param("status") SiteEntityStatus status,
             @Param("statusTime") LocalDateTime statusTime,
             @Param("lastErrorText") String lastErrorText
     );
+
+    long count();
 
 }

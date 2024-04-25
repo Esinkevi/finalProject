@@ -27,8 +27,8 @@ public class SiteEntity {
     @Column(name = "status_time", nullable = false)
     private LocalDateTime statusTime;
 
-    @Column(name = "last_error_text", columnDefinition = "TEXT")
-    private String lastErrorText;
+    @Column(name = "last_error", columnDefinition = "TEXT")
+    private String lastError;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String url;
