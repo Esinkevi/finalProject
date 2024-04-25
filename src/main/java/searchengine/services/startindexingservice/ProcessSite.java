@@ -1,4 +1,4 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

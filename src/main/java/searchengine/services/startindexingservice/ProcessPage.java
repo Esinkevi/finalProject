@@ -1,4 +1,4 @@
-package searchengine.services.startIndexingService;
+package searchengine.services.startindexingservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,9 +11,6 @@ import searchengine.repositories.SiteEntityRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
 @Component
